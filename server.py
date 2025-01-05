@@ -8,18 +8,28 @@ app = Flask("Emotion Detector")
 
 @app.route("/emotionDetector")
 def sent_analyzer():
+    ''' This code receives the text from the HTML interface and 
+        runs sentiment analysis over it using sentiment_analysis()
+        function. The output returned shows the label and its confidence 
+        score for the provided text.
+    '''
     # Retreive the text to analyze from the request arguments
     text_to_analyze = request.args.get('textToAnalyze')
-    
+
     # Pass the text to the emotion_detector function and store the response
     response = emotion_detector(text_to_analyze)
     print(response)
     if response['dominant_emotion'] is None:
         return "Invalid text! Please try again!"
 
-    return "For the given statement, the system response is 'anger': {}, 'disgust': {}, 'fear': {}, 'joy': {} and 'sadness': {}. The dominant emotion is {}.".format(response['anger'],response['disgust'],response['fear'],response['joy'],response['sadness'], response['dominant_emotion'])
-        
-        
+    return (
+        f"For the given statement, the system response is "
+        f"'anger': {response['anger']}, 'disgust': {response['disgust']}, "
+        f"'fear': {response['fear']}, 'joy': {response['joy']}, "
+        f"'sadness': {response['sadness']} "
+        f"and the dominant emotion is {response['dominant_emotion']}."
+    )
+
 @app.route("/")
 def render_index_page():
     ''' This function initiates the rendering of the main application
@@ -28,6 +38,4 @@ def render_index_page():
     return render_template('index.html')
 
 if __name__ == "__main__":
-    ''' This functions executes the flask app and deploys it on localhost:5000
-    '''
     app.run(host="0.0.0.0", port=5000)
